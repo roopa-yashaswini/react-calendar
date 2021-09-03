@@ -1,0 +1,46 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-items: stretch;
+  }
+  
+  .grid-item {
+    /* background-color: rgba(255, 255, 255, 0.8); */
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    padding: 20px;
+    font-size: 12px;
+    text-align: center;
+    background:  #1ccdaa;
+    color: white !important;
+    /* width: 33%; */
+    justify-self: stretch;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  .eventAddDiv{
+    text-align: center;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .btn{
+    border-radius: 5px;
+    padding: 1em;
+    background-color: #e5c440;
+  }
+
+  .edit, .delete{
+    background-color:  #1ccdaa;
+    border-color: white;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2rem;
+    border-radius: 50%;
+  }
+  
