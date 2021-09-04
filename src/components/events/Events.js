@@ -1,10 +1,10 @@
 import React, {useState, useContext, useEffect} from 'react'
 import styles from './Events.module.css';
 import Event from './Event';
-import Modal from './UI/Modal';
-import EventContext from '../store/event-context';
-import LoadingGif from '../../src/assets/loading.gif';
-import firebase from '../utils/firebase';
+import Modal from '../UI/Modal';
+import EventContext from '../../store/event-context';
+import LoadingGif from '../../assets/loading.gif';
+import firebase from '../../utils/firebase';
 
 
 const Events = (props) => {

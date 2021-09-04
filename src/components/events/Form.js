@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import styles from './Form.module.css';
-import EventContext from '../store/event-context';
-import firebase from '../utils/firebase';
+import EventContext from '../../store/event-context';
+import firebase from '../../utils/firebase';
 
 
 const Form = (props) => {

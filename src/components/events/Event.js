@@ -2,9 +2,9 @@ import React, {useContext, useState} from 'react';
 import styles from './Events.module.css';
 import {FaEdit} from 'react-icons/fa';
 import {MdDelete} from 'react-icons/md';
-import firebase from '../utils/firebase';
-import EventContext from '../store/event-context';
-import Modal from './UI/Modal';
+import firebase from '../../utils/firebase';
+import EventContext from '../../store/event-context';
+import Modal from '../UI/Modal';
 
 const Event = (props) => {
     const [showModal, setShowModal] = useState(false);

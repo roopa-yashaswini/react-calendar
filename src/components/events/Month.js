@@ -1,15 +1,41 @@
-import React, {useState} from 'react'
+import React, {useState, useContext}  from 'react'
 import styles from './Calendar.module.css';
 import Day from './Day';
 import Events from './Events';
+import {Button} from 'react-bootstrap'
+import AuthContext from '../../store/auth-context';
+import firebase from '../../utils/firebase';
+import { useHistory } from "react-router-dom";
+import Login from '../auth/Login';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const Month = (props) => {
+    const ctx = useContext(AuthContext);
+    let history = useHistory();
+    const signOutHandler = () => {
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            console.log('signed out');
+            ctx.setUser({});
+            history.push('/login');
+          }).catch((error) => {
+            // An error happened.
+          });
+    }
+
     const date = new Date().getDate();
     const [selectedDate, setSelectedDate] = useState(date);
     return(
         <>
+            
+                <div className={styles.logoutDiv}>
+                <Button variant="danger" size="sm" onClick={signOutHandler} >
+                        Logout
+                    </Button>
+                </div>
+            
+            
             <div className={styles.month}>
                 <ul>
                     <li className={styles.prev}><button onClick={props.onPrevClick}>&#10094;</button></li>
@@ -37,7 +63,7 @@ const Month = (props) => {
                     })
                 }
             </ul>
-            <Events selectedDate={selectedDate} month={props.month} year={props.year} />
+            {ctx.user ? <Events selectedDate={selectedDate} month={props.month} year={props.year} /> : <Login />}
         </>
     );
 };
