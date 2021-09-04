@@ -4,22 +4,8 @@ import Event from './Event';
 import Modal from './UI/Modal';
 import EventContext from '../store/event-context';
 import LoadingGif from '../../src/assets/loading.gif';
+import firebase from '../utils/firebase';
 
-const fetchAPI = async(fetchEvents, setIsLoading) => {
-    const result = await fetch('https://react-213d3-default-rtdb.firebaseio.com/events.json');
-    const data = await result.json();
-    const loadedEvents = [];
-    for(const key in data){
-      loadedEvents.push({
-        id: key,
-        name: data[key].event.name,
-        description: data[key].event.description,
-        date: data[key].event.date
-      });
-    }
-    setIsLoading(false);
-    fetchEvents(loadedEvents);
-}
 
 const Events = (props) => {
     const [showModal, setShowModal] = useState(false);
@@ -27,9 +13,21 @@ const Events = (props) => {
     const ctx = useContext(EventContext);
 
     useEffect(()=>{
-        fetchAPI(ctx.fetchEvents, setIsLoading);
+        const eventRef = firebase.database().ref('Event');
+        eventRef.on('value', (snapshot)=>{
+            const data = snapshot.val();
+            const eventsList = [];
+            for(const key in data){
+                eventsList.push({
+                    id: key, ...data[key]
+                });
+            }
+            setIsLoading(false);
+            ctx.fetchEvents(eventsList);
+        })
     }, []);
-    const showModalHandler = () => {
+
+    const createEventHandler = () => {
         setShowModal(true);
     };
     
@@ -48,7 +46,7 @@ const Events = (props) => {
     return (
         <>
             <div className={styles.eventAddDiv}>
-                <button className={styles.btn} onClick={showModalHandler}>Add Event</button>
+                <button className={styles.btn} onClick={createEventHandler}>Add Event</button>
             </div>
             <div className={styles['grid-container']}>
                 {filtered.map(event=>{

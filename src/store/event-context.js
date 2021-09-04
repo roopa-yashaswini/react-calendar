@@ -3,7 +3,9 @@ import React from 'react';
 const EventContext = React.createContext({
     events: [],
     addEvent: (event) => {},
-    fetchEvents: (events) => {}
+    fetchEvents: (events) => {},
+    deleteEvent: (eventId)=>{},
+    updateEvent: (event)=>{}
 });
 
 

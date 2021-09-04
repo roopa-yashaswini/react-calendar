@@ -18,7 +18,7 @@ const Modal = (props) => {
     return (
         <>
              {ReactDOM.createPortal(<Backdrop onClose={closeModal}  />, document.getElementById('backdrop-root'))} 
-             {ReactDOM.createPortal(<Form date={props.date} onClose={closeModal}></Form>,
+             {ReactDOM.createPortal(<Form date={props.date} onClose={closeModal} event={props.event}></Form>,
                                         document.getElementById('modal-root')
                                     )
              } 

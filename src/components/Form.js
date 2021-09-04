@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import styles from './Form.module.css';
 import EventContext from '../store/event-context';
-
+import firebase from '../utils/firebase';
 
 
 const Form = (props) => {
@@ -9,12 +9,17 @@ const Form = (props) => {
     const [descritpionValid, setDescriptionValid] = useState(true);
     const [formValid, setFormValid] = useState(true);
     const ctx = useContext(EventContext);
-    const [event, setEvent] = useState({
-        name: '',
-        description: '',
-        date: `${props.date.getFullYear()}/${props.date.getMonth()+1}/${props.date.getDate()}`,
-        id: (Math.random() + 1).toString(36).substring(4)
-    });
+    let actual = {};
+    if(props.event){
+        actual = props.event;
+    }else{
+        actual = {
+            name: '',
+            description: '',
+            date: `${props.date.getFullYear()}/${props.date.getMonth()+1}/${props.date.getDate()}`,
+        };
+    }
+    const [event, setEvent] = useState(actual);
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -26,20 +31,48 @@ const Form = (props) => {
         setFormValid(true);
         ctx.addEvent(event);
 
-        fetch('https://react-213d3-default-rtdb.firebaseio.com/events.json', {
-            method: 'POST',
-            body: JSON.stringify({
-                event: event
-            }) 
-        });
+        const eventRef = firebase.database().ref('Event');
+        eventRef.push(event);
+
+        // fetch('https://react-213d3-default-rtdb.firebaseio.com/events.json', {
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         event: event
+        //     }) 
+        // });
         setEvent({
             name: '',
             description: '',
-            id: (Math.random() + 1).toString(36).substring(4)
         });
         props.onClose();
 
     }
+
+    const updateHandler = (e) => {
+        e.preventDefault();
+        if(event.name.length === 0 || event.name.trim() === '' || event.description.length === 0 || event.description.trim() === 0){
+            setFormValid(false);
+            return;
+        }
+        
+        setFormValid(true);
+
+        const eventRef = firebase.database().ref('Event').child(event.id);
+        eventRef.update({
+            name: event.name,
+            description: event.description
+        });
+        ctx.updateEvent(event);
+
+        setEvent({
+            name: '',
+            description: '',
+        });
+        props.onClose();
+
+    }
+
+
     const nameHandler = (e) => {
         if(e.target.value.length === 0 || e.target.value.trim() === ""){
             setNameValid(false);
@@ -72,7 +105,7 @@ const Form = (props) => {
         <div className={styles.modal}>
             <div className={styles.content}>
                 {!formValid && <h3>Enter valid details</h3>}
-                <form className={styles.input} onSubmit={submitHandler}>
+                <form className={styles.input} onSubmit={props.event ? updateHandler :submitHandler}>
                     <label htmlFor="name">Name</label>
                     <input type="text" id="name" value={event.name} onChange={nameHandler} />
                     {!nameValid && <span>Enter the Event title</span>}
@@ -80,7 +113,7 @@ const Form = (props) => {
                     <input type="text" id="description"  value={event.description} onChange={descHandler} />
                     {!descritpionValid && <span>Enter the Event description</span>}
                     <div className={styles.actions}>
-                        <button type='submit' className={styles.submit}>Create</button>
+                        <button type='submit' className={styles.submit}>{props.event ? 'Update': 'Create'}</button>
                     </div>
                     
                 </form>

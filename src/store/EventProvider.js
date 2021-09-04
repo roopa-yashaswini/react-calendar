@@ -16,6 +16,18 @@ const eventReducer = (state, action) => {
         return {
             events: fetchedEvents
         }
+    }else if(action.type === 'DELETE'){
+        let updatedEvents = state.events.filter(event=> event.id !== action.id);
+        return {
+            events: updatedEvents
+        }
+    }else if(action.type === 'UPDATE'){
+        let updatedEvents = state.events;
+        const index = updatedEvents.findIndex(event=>event.id === action.event.id);
+        updatedEvents[index] = action.event;
+        return {
+            events: updatedEvents
+        }
     }
     return defaultEventState;
 };
@@ -28,10 +40,20 @@ const EventProvider = (props) => {
     const fetchEvents = (events) => {
         eventDispatch({type: 'FETCH', events:events});
     }
+    const deleteEvent = (id) => {
+        eventDispatch({type: 'DELETE', id: id});
+    };
+
+    const updateEvent = (event) => {
+        eventDispatch({type: 'DELETE', event: event});
+    };
+
     const eventContext = {
         events: eventState.events,
         addEvent: addEvent,
-        fetchEvents: fetchEvents
+        fetchEvents: fetchEvents,
+        deleteEvent: deleteEvent,
+        updateEvent: updateEvent
     }
     return(
         <EventContext.Provider value={eventContext}>
