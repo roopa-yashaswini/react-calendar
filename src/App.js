@@ -1,19 +1,16 @@
-import React, {useContext, useEffect} from 'react';
+import React from 'react';
 import './App.css';
 import Calendar from './components/events/Calendar';
 import EventProvider from './store/EventProvider';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Login from './components/auth/Login';
-import {Switch, Route, Redirect} from 'react-router-dom';
-import AuthContext from './store/auth-context';
-import context from 'react-bootstrap/esm/AccordionContext';
 
 function App() { 
-  const ctx = useContext(AuthContext);
 
   return (
     <>
+    <EventProvider>
       <Calendar />
+    </EventProvider>
       {/* <Switch>
         <Route path='/' exact>
           <Redirect to={ctx.user ? '/events' : '/login'} />

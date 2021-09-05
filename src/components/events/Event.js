@@ -2,11 +2,13 @@ import React, {useContext, useState} from 'react';
 import styles from './Events.module.css';
 import {FaEdit} from 'react-icons/fa';
 import {MdDelete} from 'react-icons/md';
-import firebase from '../../utils/firebase';
 import EventContext from '../../store/event-context';
 import Modal from '../UI/Modal';
+import { db } from '../../utils/firebase';
+import AuthContext from '../../store/auth-context';
 
 const Event = (props) => {
+    const auth = useContext(AuthContext);
     const [showModal, setShowModal] = useState(false);
     const ctx = useContext(EventContext);
     const event = {
@@ -15,9 +17,17 @@ const Event = (props) => {
         description: props.description,
         date: props.date
     };;
-    const deleteEventHandler = () => {
-        const eventRef = firebase.database().ref('Event').child(props.id);
-        eventRef.remove();
+    const deleteEventHandler = async() => {
+        const res = await db.collection('events').doc(auth.user.uid).get();
+        if (res.data()){
+            const events = res.data().events;
+            const updatedEvents = events.filter(e => e.id !== props.id);
+            await db.collection('events').doc(auth.user.uid)
+            .update({
+                events: updatedEvents,
+            });
+            ctx.updateEvent(event);
+        }
         ctx.deleteEvent(props.id);
     };
 

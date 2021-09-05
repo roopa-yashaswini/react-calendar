@@ -15,12 +15,10 @@ const Month = (props) => {
     let history = useHistory();
     const signOutHandler = () => {
         firebase.auth().signOut().then(() => {
-            // Sign-out successful.
-            console.log('signed out');
-            ctx.setUser({});
+            ctx.setUser(null);
             history.push('/login');
           }).catch((error) => {
-            // An error happened.
+            console.log(error);
           });
     }
 

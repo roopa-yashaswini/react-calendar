@@ -4,33 +4,27 @@ import Event from './Event';
 import Modal from '../UI/Modal';
 import EventContext from '../../store/event-context';
 import LoadingGif from '../../assets/loading.gif';
-import firebase from '../../utils/firebase';
+import {db} from '../../utils/firebase';
+import AuthContext from '../../store/auth-context';
 
 
 const Events = (props) => {
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const ctx = useContext(EventContext);
+    const auth = useContext(AuthContext);
 
     useEffect(()=>{
-        const eventRef = firebase.database().ref('Event');
-        eventRef.on('value', (snapshot)=>{
-            const data = snapshot.val();
-            const eventsList = [];
-            for(const key in data){
-                eventsList.push({
-                    id: key, ...data[key]
-                });
-            }
+      db.collection('events').doc(auth.user.uid).onSnapshot((snapshot)=>{
             setIsLoading(false);
-            ctx.fetchEvents(eventsList);
+            ctx.fetchEvents(snapshot.data().events);
         })
     }, []);
 
     const createEventHandler = () => {
         setShowModal(true);
     };
-    
+
     const date = new Date(props.year, props.month, props.selectedDate);
     
     const filtered = ctx.events.filter(e=> new Date(e.date).setHours(0, 0, 0, 0) === date.setHours(0, 0, 0, 0));
